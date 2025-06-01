@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Stone Paper Scissors</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      transition: background-color 1s ease;
+    }
+
+    h1 {
+      text-align: center;
+      font-size: 55px;
+      color: rgb(91, 3, 139);
+      margin-top: 30px;
+    }
+
+    #img {
+      display: flex;
+      justify-content: center;
+      margin: 20px 0;
+    }
+
+    #img img {
+      width: 150px;
+      height: 150px;
+      animation: pulse 2s infinite;
+    }
+
+    @keyframes pulse {
+      0% { transform: scale(1); }
+      50% { transform: scale(1.1); }
+      100% { transform: scale(1); }
+    }
+
+    .main {
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .button-row {
+      align-items: center;
+      border-radius: 20px;
+      width: 450px;
+      height: 150px;
+      border: 4px solid black;
+      display: flex;
+      justify-content: center;
+      gap: 10px;
+      margin-top: 20px;
+      flex-wrap: wrap;
+    }
+
+    button {
+      background-color: transparent;
+      border: none;
+      cursor: pointer;
+      transition: transform 0.3s ease;
+    }
+
+    button:hover {
+      transform: scale(1.1);
+    }
+
+    button img {
+      width: 100px;
+      height: 100px;
+      border-radius: 10px;
+      box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+    }
+
+    #result {
+      margin-top: 40px;
+      font-size: 30px;
+      color: rgb(230, 63, 8);
+      text-align: center;
+      min-height: 80px;
+    }
+
+    #scoreBoard {
+      margin-top: 20px;
+      font-size: 22px;
+      color: #333;
+      text-align: center;
+    }
+
+    #scoreBoard span {
+      font-weight: bold;
+      color: darkgreen;
+    }
+
+    .creator-note {
+      position: fixed;
+      bottom: 10px;
+      right: 15px;
+      font-size: 16px;
+      color: #555;
+      font-style: italic;
+      background-color: rgba(255, 255, 255, 0.6);
+      padding: 6px 12px;
+      border-radius: 8px;
+      box-shadow: 0 0 5px rgba(0,0,0,0.1);
+    }
+  </style>
+</head>
+<body>
+  <h1>Stone Paper Scissors Game</h1>
+  <div id="img">
+    <img src="stonepaperscissors.png" alt="stone paper scissors" />
+  </div>
+
+  <div class="main">
+    <div class="button-row">
+      <button onclick="playGame('stone')">
+        <img src="stone.png" alt="stone">
+      </button>
+      <button onclick="playGame('paper')">
+        <img src="paper.webp" alt="paper">
+      </button>
+      <button onclick="playGame('scissors')">
+        <img src="scissors.png" alt="scissors">
+      </button>
+    </div>
+
+    <div id="result"></div>
+    <div id="scoreBoard">
+      Wins: <span id="winCount">0</span> |
+      Losses: <span id="loseCount">0</span> |
+      Draws: <span id="drawCount">0</span>
+    </div>
+  </div>
+
+  <audio id="winSound" src="win.wav" preload="auto"></audio>
+  <audio id="loseSound" src="lose.wav" preload="auto"></audio>
+  <audio id="drawSound" src="draw.wav" preload="auto"></audio>
+
+  <div class="creator-note">
+    Created by - Amrit Saini
+  </div>
+
+  <script>
+    let winCount = 0;
+    let loseCount = 0;
+    let drawCount = 0;
+
+    function playGame(playerChoice) {
+      console.log('You have chosen:', playerChoice);
+      const choices = ['stone', 'paper', 'scissors'];
+      const computerChoice = choices[Math.floor(Math.random() * 3)];
+      console.log('Computer has chosen:', computerChoice);
+
+      let result = '';
+      let soundId = '';
+
+      if (playerChoice === computerChoice) {
+        result = "It's a draw!";
+        drawCount++;
+        soundId = 'drawSound';
+      } else if (
+        (playerChoice === 'stone' && computerChoice === 'scissors') ||
+        (playerChoice === 'paper' && computerChoice === 'stone') ||
+        (playerChoice === 'scissors' && computerChoice === 'paper')
+      ) {
+        result = "You win!";
+        winCount++;
+        soundId = 'winSound';
+      } else {
+        result = "Computer wins!";
+        loseCount++;
+        soundId = 'loseSound';
+      }
+
+      document.querySelector('#result').innerHTML = `
+        You chose <strong>${playerChoice}</strong>, 
+        computer chose <strong>${computerChoice}</strong>.<br>${result}
+      `;
+
+      document.getElementById('winCount').textContent = winCount;
+      document.getElementById('loseCount').textContent = loseCount;
+      document.getElementById('drawCount').textContent = drawCount;
+
+      const sound = document.getElementById(soundId);
+      sound.currentTime = 0;
+      sound.play();
+    }
+  </script>
+</body>
+</html>
